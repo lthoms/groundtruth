@@ -1,0 +1,177 @@
+<html>
+
+	<head>
+		<style>
+
+		#test {
+			color: red;
+			background-color: cornflowerblue;
+			height: 100%;
+		}
+		body{
+		 margin:0;
+		}
+		</style>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+		<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet-src.js"></script>
+		<script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+		<script src='https://unpkg.com/shp-write@0.2.8/shpwrite.js' ></script>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.css">
+		<script src="https://unpkg.com/leaflet-easybutton@2.0.0/src/easy-button.js"></script>
+		
+<link rel="stylesheet" href="https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.css" />
+
+<script src="https://domoritz.github.io/leaflet-locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+		
+		<style>
+		.easy-button-button .button-state {
+			height: 50%; 
+		}
+		
+		.legend {
+			line-height: 18px;
+			color: #555;
+		}
+		.legend i {
+			width: 18px;
+			height: 18px;
+			float: left;
+			margin-right: 8px;
+			opacity: 0.7;
+		}
+		.info {
+			padding: 6px 8px;
+			background: white;
+			background: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+		</style>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	</head>
+
+	<body>
+		<div id="test">
+		 jhh
+		</div>
+
+
+		<script>
+		var gemmeMedDato = function(){
+			var d = new Date();
+			var n = d.getDate()+'_'+d.getHours()+'_'+d.getMinutes();
+			shpwrite.download(sidsteKlikkede.toGeoJSON(), {
+				folder: 'groundtruth_'+n,
+				types: {
+					point: 'groundtruth_'+d.getDate()+'_'+d.getHours()+'_'+d.getMinutes(),
+					polygon: 'mypolygons',
+					line: 'mylines'
+				}
+			})
+		} 
+		
+		
+		var colorArray = ['#e41a1c','#377eb8','#4daf4a','#984ea3'];
+		var valueArray = ["pløjet","harvet","høstet","ikke høstet"];
+
+		var setStil = function(feature){
+			return {
+				fillColor: colorArray[findIndexet(feature.properties.value)],
+				fillOpacity:1,
+				stroke:false
+			}
+		
+		}
+		
+		var sidsteKlikkede = L.geoJSON('', {
+								pointToLayer: function (feature, latlng) {
+									return L.circle(latlng, {radius: 50});
+								},
+								style: setStil
+							})
+							.on('click',function(punktEvent){
+								L.DomEvent.stopPropagation(punktEvent)
+								console.log(punktEvent);
+								punktEvent.layer.feature.properties.value = nyVaerdi(punktEvent.layer.feature.properties.value)
+								punktEvent.layer.setStyle(setStil(punktEvent.layer.feature))
+							 
+								
+							 })
+							 .on('contextmenu', function(punktSlet){
+								sidsteKlikkede.removeLayer(punktSlet.layer)
+							 
+							 
+							 });
+		
+		var findIndexet = function(nuvaerendeVaerdi){
+				
+		    return valueArray.findIndex(function(e){ return e == nuvaerendeVaerdi});
+	
+		}
+		
+		var nyVaerdi = function(nuvaerendeVaerdi){
+			
+			var index = findIndexet(nuvaerendeVaerdi)
+			
+			if(valueArray[1+index] == undefined){ 
+				return valueArray[0]
+			} else {
+				return valueArray[1+index]
+			}
+	
+		}
+		
+		
+		nyVaerdi("høstet")
+		
+		
+		var testkort = L.map('test')
+						.setView({lat: 55.598523085310305, lng: 11.995675563812258}, 15)
+						.on('click', function(e){
+							sidsteKlikkede.addData(
+								turf.point(
+									[e.latlng.lng,e.latlng.lat],
+									{value:'pløjet'}
+									)
+							)
+							.addTo(testkort)
+							
+						})
+						
+		var baggrund = L.tileLayer('https://{s}.services.kortforsyningen.dk/orto_foraar_webm?login={login}&password={password}&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=orto_foraar&STYLE=default&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image%2Fjpeg', {
+								maxZoom:18,
+								login: "StatForvaltIT",
+								password: "180laksp"
+								})
+								.addTo(testkort);
+								
+		L.easyButton('fa-download fa-lg', function(btn, map){
+			gemmeMedDato()
+		}).addTo( testkort );
+		
+		L.control.locate().addTo(testkort);
+
+		var legend = L.control({position: 'bottomright'});
+
+			legend.onAdd = function (map) {
+
+				var div = L.DomUtil.create('div', 'info legend'),
+					grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+					labels = [];
+
+				// loop through our density intervals and generate a label with a colored square for each interval
+				for (var i = 0; i < valueArray.length; i++) {
+					div.innerHTML +=
+						'<i style="background:' + colorArray[i] + '"></i> ' +
+						valueArray[i] + '<br>' ;
+				}
+
+				return div;
+			};
+
+			legend.addTo(testkort);
+		</script>
+	</body>
+	
+</html>
