@@ -28,10 +28,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.62.0/L.Control.Locate.min.js" charset="utf-8"></script>
 		
 		<style>
-		.easy-button-button .button-state {
-			 		height: 100%; 
-		}
-		
+
 		.legend {
 			line-height: 18px;
 			color: #555;
@@ -162,7 +159,10 @@
 			gemmeMedDato()
 		}).addTo( testkort );
 		
-		L.control.locate().addTo(testkort);
+		L.control.locate({
+			locateOptions: {enableHighAccuracy:true}
+		}
+		).addTo(testkort);
 
 		var legend = L.control({position: 'bottomright'});
 
