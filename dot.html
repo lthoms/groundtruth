@@ -87,7 +87,7 @@
 		var setStil = function(feature){
 			return {
 				fillColor: colorArray[findIndexet(feature.properties.value)],
-				fillOpacity:1,
+				fillOpacity:0.6,
 				stroke:false
 			}
 		
@@ -154,9 +154,12 @@
 								password: "180laksp"
 								})
 								.addTo(testkort);
-								
+		var automatiskGem;						
 		L.easyButton('fa-download fa-lg', function(btn, map){
-			gemmeMedDato()
+			gemmeMedDato();
+			clearInterval(automatiskGem);
+			automatiskGem = setInterval(function(){ gemmeMedDato(); }, 60000);
+			
 		}).addTo( testkort );
 		
 		L.control.locate({
