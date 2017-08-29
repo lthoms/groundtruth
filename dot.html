@@ -81,13 +81,13 @@
 		} 
 		
 		
-		var colorArray = ['#e41a1c','#377eb8','#984ea3','#4daf4a'];
-		var valueArray = ["jordbearbejdet","høstet","ikke høstet","grønt"];
+		var colorArray = ['#ca0020','#f4a582','#ffffb2','#2ca25f','#0571b0'];
+		var valueArray = ["harvet","høstet","ikke høstet","grønt","pløjet"];
 
 		var setStil = function(feature){
 			return {
 				fillColor: colorArray[findIndexet(feature.properties.value)],
-				fillOpacity:0.6,
+				fillOpacity:0.9,
 				stroke:false
 			}
 		
@@ -132,7 +132,7 @@
 		}
 		
 		
-		nyVaerdi("jordbearbejdet")
+		nyVaerdi("harvet")
 		
 		
 		var testkort = L.map('test')
@@ -141,7 +141,7 @@
 							sidsteKlikkede.addData(
 								turf.point(
 									[e.latlng.lng,e.latlng.lat],
-									{value:'jordbearbejdet'}
+									{value:'harvet'}
 									)
 							)
 							.addTo(testkort)
