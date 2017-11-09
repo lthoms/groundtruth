@@ -157,7 +157,9 @@
 								})
 								.addTo(testkort);
 		var markkort = L.esri.featureLayer({
-			url: 'https://services2.arcgis.com/DqYc4VbfKJbiqFCu/arcgis/rest/services/Marker16_testdata/FeatureServer/0'
+			url: 'https://services2.arcgis.com/DqYc4VbfKJbiqFCu/arcgis/rest/services/Marker16_testdata/FeatureServer/0',
+			simplifyFactor: 0.5,
+			precision: 5
 			})
 			.addTo(testkort);
 			
