@@ -26,7 +26,9 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.62.0/L.Control.Locate.min.css" />
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.62.0/L.Control.Locate.min.js" charset="utf-8"></script>
-		
+		<script src="https://unpkg.com/esri-leaflet@2.1.1/dist/esri-leaflet.js"
+  	 	integrity="sha512-ECQqaYZke9cSdqlFG08zSkudgrdF6I1d8ViSa7I3VIszJyVqw4ng1G8sehEXlumdMnFYfzY0tMgdQa4WCs9IUw=="
+    		crossorigin=""></script>
 		<style>
 
 		.legend {
@@ -81,8 +83,8 @@
 		} 
 		
 		
-		var colorArray = ['#ca0020','#f4a582','#ffffb2','#2ca25f','#0571b0'];
-		var valueArray = ["harvet","høstet","ikke høstet","grønt","pløjet"];
+		var colorArray = ['#ca0020','#f4a582','#ffffb2','#2ca25f'];
+		var valueArray = ["pløjet","ikke pløjet","majs","høstet majs"];
 
 		var setStil = function(feature){
 			return {
@@ -154,6 +156,11 @@
 								password: "180laksp"
 								})
 								.addTo(testkort);
+		var markkort = L.esri.featureLayer({
+			url: 'https://services2.arcgis.com/DqYc4VbfKJbiqFCu/arcgis/rest/services/Marker16_testdata/FeatureServer/0'
+			})
+			.addTo(testkort);
+			
 		var automatiskGem;						
 		L.easyButton('fa-download fa-lg', function(btn, map){
 			gemmeMedDato();
